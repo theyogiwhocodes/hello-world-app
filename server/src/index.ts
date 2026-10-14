@@ -1,5 +1,8 @@
 import cors from 'cors';
 import express from 'express';
+import { existsSync } from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { quoteCart } from './fees';
 import { searchAll } from './search';
 import { closeBrowser } from './browser';
@@ -24,6 +27,13 @@ app.post('/api/quote', (req, res) => {
   if (!Array.isArray(carts)) return res.status(400).json({ error: 'carts must be an array' });
   res.json({ quotes: carts.map(quoteCart) });
 });
+
+// In production the built React app is served from this same process (one URL, no CORS).
+const webDist = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../web/dist');
+if (existsSync(webDist)) {
+  app.use(express.static(webDist));
+  app.get(/^\/(?!api\/).*/, (_req, res) => res.sendFile(path.join(webDist, 'index.html')));
+}
 
 const port = Number(process.env.PORT ?? 3001);
 const server = app.listen(port, () => console.log(`API on :${port}${process.env.MOCK === '1' ? ' (MOCK data)' : ''}`));

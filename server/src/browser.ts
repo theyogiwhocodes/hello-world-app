@@ -10,6 +10,8 @@ const UA =
 function getBrowser(): Promise<Browser> {
   browserP ??= chromium.launch({
     headless: true,
+    // Containers run as root without a user-namespace sandbox.
+    args: process.env.CHROMIUM_NO_SANDBOX === '1' ? ['--no-sandbox', '--disable-dev-shm-usage'] : [],
     executablePath: process.env.CHROMIUM_PATH || undefined,
   });
   return browserP;

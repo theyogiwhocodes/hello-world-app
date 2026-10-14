@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: cart-compare
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      # MOCK=1 serves fake data (demo). Set to 0 / remove to attempt live scraping.
+      - key: MOCK
+        value: "1"
