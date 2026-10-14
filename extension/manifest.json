@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Cart Compare - Cart Filler",
+  "version": "0.1.0",
+  "description": "Adds the items from a Cart Compare cart into your own cart on Amazon, Flipkart, Blinkit, Zepto or Swiggy Instamart. Never places orders.",
+  "permissions": ["scripting", "tabs"],
+  "host_permissions": [
+    "https://www.amazon.in/*",
+    "https://www.flipkart.com/*",
+    "https://blinkit.com/*",
+    "https://www.zeptonow.com/*",
+    "https://www.swiggy.com/*"
+  ],
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [
+    {
+      "matches": ["http://localhost:5173/*", "http://127.0.0.1:5173/*"],
+      "js": ["content-bridge.js"],
+      "run_at": "document_start"
+    }
+  ]
+}
