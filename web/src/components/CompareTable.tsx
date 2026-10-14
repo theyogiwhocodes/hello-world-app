@@ -1,4 +1,5 @@
-import { PLATFORM_LABELS, type Cart, type PlatformQuote } from '@app/shared';
+import { type Cart, type PlatformQuote } from '@app/shared';
+import { PlatformLogo } from './PlatformLogo';
 import { inr } from './ResultsGrid';
 
 const fmtEta = (m: number) => (m >= 1440 ? `${Math.round(m / 1440)} day${m >= 2880 ? 's' : ''}` : `${m} min`);
@@ -18,7 +19,7 @@ export function CompareTable({ carts, quotes }: { carts: Cart[]; quotes: Record<
           const q = quotes[c.id];
           return (
             <tr key={c.id}>
-              <td>{c.name}<br /><span className="muted">{PLATFORM_LABELS[c.platform]}</span></td>
+              <td>{c.name}<br /><PlatformLogo platform={c.platform} height={20} /></td>
               <td>{inr(q.itemsTotal)}</td>
               <td>{q.deliveryFee ? inr(q.deliveryFee) : 'Free'}</td>
               <td>{inr(q.handlingFee)}</td>

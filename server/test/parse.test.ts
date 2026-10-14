@@ -25,3 +25,12 @@ describe('parseCards', () => {
     expect(out[0].inStock).toBe(false);
   });
 });
+
+describe('parseCards images', () => {
+  it('passes the scraped image URL through', () => {
+    const out = parseCards('amazon', 'https://www.amazon.in', [
+      { href: '/x/dp/B012345678', text: 'Thing\n₹99', img: 'https://m.media-amazon.com/images/I/abc.jpg' },
+    ]);
+    expect(out[0].imageUrl).toBe('https://m.media-amazon.com/images/I/abc.jpg');
+  });
+});

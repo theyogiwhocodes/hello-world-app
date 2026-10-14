@@ -11,6 +11,12 @@ function seeded(seed: string) {
   };
 }
 
+/** Self-contained placeholder product image (no network needed). */
+function mockImage(label: string, hue: number): string {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><rect width="200" height="200" rx="16" fill="hsl(${hue} 70% 92%)"/><rect x="60" y="40" width="80" height="120" rx="12" fill="hsl(${hue} 60% 60%)"/><rect x="72" y="70" width="56" height="40" rx="6" fill="#fff" opacity=".85"/><text x="100" y="98" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="hsl(${hue} 60% 30%)">${label}</text></svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+}
+
 const VARIANTS = ['', 'Classic', 'Family Pack', 'Premium', 'Value Pack', 'Organic', 'Small'];
 const UNITS = ['100 g', '200 g', '500 g', '1 kg', '250 ml', '1 L'];
 const QUICK: Platform[] = ['blinkit', 'zepto', 'instamart'];
@@ -35,6 +41,7 @@ export function mockProvider(platform: Platform): Provider {
           price,
           mrp: Math.round(price * 1.12),
           unit,
+          imageUrl: mockImage((query.trim()[0] ?? '?').toUpperCase(), Math.floor(rnd() * 360)),
           url: `https://example.com/${platform}/${productId}`,
           inStock: rnd() > 0.1,
           etaMinutes: QUICK.includes(platform) ? 8 + Math.floor(rnd() * 10) : undefined,

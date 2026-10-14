@@ -12,8 +12,10 @@ button.ghost { background:transparent; color:var(--fg); border-color:var(--line)
 .muted { color:var(--muted); font-size:13px; } .error { color:var(--err); } .banner { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:8px 12px; }
 .results { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:12px; margin-top:16px; align-items:start; }
 .col { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px; }
-.card { display:grid; gap:6px; border-top:1px solid var(--line); padding:10px 0; }
-.card img { width:64px; height:64px; object-fit:contain; }
+.card { display:grid; gap:8px; padding:8px 0; }
+.card { justify-items:center; text-align:center; } .card .info { justify-items:center; } .card .price { justify-content:center; flex-wrap:wrap; } .card button { width:100%; }
+.img-fallback { display:grid; place-items:center; background:var(--bg); border:1px dashed var(--line); border-radius:10px; }
+.line img, .line .img-fallback { flex:none; border-radius:6px; background:#fff; }
 .info { display:grid; gap:2px; } .title { color:var(--fg); text-decoration:none; font-weight:500; }
 .price { display:flex; gap:8px; align-items:baseline; } .eta { margin-left:auto; color:var(--best); font-size:12px; }
 .carts { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:12px; }

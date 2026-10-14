@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 48" role="img" aria-label="zepto">
+  <rect width="160" height="48" rx="10" fill="#5A189A"/>
+  <text x="80" y="29" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="20" font-weight="700" fill="#FFFFFF">zepto</text>
+  <rect x="38" y="35" width="84" height="3" rx="1.5" fill="#FF3269"/>
+</svg>

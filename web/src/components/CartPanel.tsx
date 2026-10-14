@@ -1,4 +1,6 @@
 import { PLATFORM_LABELS, type Cart, type PlatformQuote } from '@app/shared';
+import { PlatformLogo } from './PlatformLogo';
+import { ProductImage } from './ProductImage';
 import { inr } from './ResultsGrid';
 import { useStore } from '../store';
 
@@ -19,7 +21,7 @@ export function CartPanel({ carts, quotes, onBuy }: Props) {
           <div key={cart.id} className="cart">
             <header>
               <input value={cart.name} onChange={(e) => renameCart(cart.id, e.target.value)} aria-label="Cart name" />
-              <span className="badge">{PLATFORM_LABELS[cart.platform]}</span>
+              <PlatformLogo platform={cart.platform} height={22} />
               <button className="ghost" onClick={() => deleteCart(cart.id)} aria-label={`Delete ${cart.name}`}>
                 ✕
               </button>
@@ -27,6 +29,7 @@ export function CartPanel({ carts, quotes, onBuy }: Props) {
             {cart.items.length === 0 && <p className="muted">Empty</p>}
             {cart.items.map((i) => (
               <div key={i.product.id} className="line">
+                <ProductImage src={i.product.imageUrl} alt="" platform={cart.platform} size={40} />
                 <span className="grow">{i.product.title}</span>
                 <span className="qty">
                   <button onClick={() => setQty(cart.id, i.product.id, i.qty - 1)} aria-label="Decrease">−</button>

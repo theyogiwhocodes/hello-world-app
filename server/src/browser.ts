@@ -42,12 +42,28 @@ export async function getContext(key: string, init?: (ctx: BrowserContext) => Pr
 export async function collectCards(page: Page, hrefPattern: string): Promise<RawCard[]> {
   return page.evaluate((pattern) => {
     const re = new RegExp(pattern);
+    // Lazy-loaded tiles often keep a data: placeholder in src; look at the real-URL attributes first.
+    const bestImage = (root: Element): string | undefined => {
+      const candidates: string[] = [];
+      for (const img of Array.from(root.querySelectorAll('img'))) {
+        const srcset = img.getAttribute('srcset') || img.getAttribute('data-srcset') || '';
+        const fromSet = srcset.split(',').map((x) => x.trim().split(/\s+/)[0]).filter(Boolean).pop();
+        candidates.push(
+          img.getAttribute('data-src') || '',
+          fromSet || '',
+          img.currentSrc || '',
+          img.getAttribute('src') || '',
+        );
+      }
+      const ok = candidates.find((u) => u && !u.startsWith('data:') && !/sprite|placeholder|loading|blank/i.test(u));
+      return ok ? new URL(ok, location.href).href : undefined;
+    };
     return Array.from(document.querySelectorAll('a[href]'))
       .filter((a) => re.test((a as HTMLAnchorElement).getAttribute('href') || ''))
       .map((a) => ({
         href: (a as HTMLAnchorElement).href,
         text: (a as HTMLElement).innerText || '',
-        img: (a.querySelector('img') as HTMLImageElement | null)?.src,
+        img: bestImage(a),
       }));
   }, hrefPattern);
 }

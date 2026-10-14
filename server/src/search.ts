@@ -4,6 +4,8 @@ import { getProviders } from './providers';
 import { topResults } from './rank';
 
 const cache = new TtlCache<SearchResult>(5 * 60 * 1000);
+/** Best matches kept per site. */
+const TOP_N = 1;
 const PROVIDER_TIMEOUT_MS = 30_000;
 
 function withTimeout<T>(p: Promise<T>, ms: number): Promise<T> {
@@ -22,7 +24,7 @@ export async function searchAll(query: string, pincode: string): Promise<SearchR
       if (cached) return [platform, cached];
       try {
         const raw = await withTimeout(providers[platform].search(query, pincode), PROVIDER_TIMEOUT_MS);
-        const top = topResults(query, raw, 5);
+        const top = topResults(query, raw, TOP_N);
         const result: SearchResult = top.length ? top : { error: 'No matching products found (or the site blocked the request)' };
         if (top.length) cache.set(key, result);
         return [platform, result];

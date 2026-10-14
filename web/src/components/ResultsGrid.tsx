@@ -1,4 +1,6 @@
-import { PLATFORMS, PLATFORM_LABELS, type Product, type SearchResponse } from '@app/shared';
+import { PLATFORMS, type Product, type SearchResponse } from '@app/shared';
+import { PlatformLogo } from './PlatformLogo';
+import { ProductImage } from './ProductImage';
 
 interface Props {
   data: SearchResponse | null;
@@ -9,14 +11,14 @@ interface Props {
 export const inr = (n: number) => `₹${n.toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
 
 export function ResultsGrid({ data, loading, onAdd }: Props) {
-  if (!data && !loading) return <p className="muted">Search for a product to compare prices across all five sites.</p>;
+  if (!data && !loading) return <p className="muted">Search for a product to compare the best match across all five sites.</p>;
   return (
     <div className="results">
       {PLATFORMS.map((platform) => {
         const r = data?.results[platform];
         return (
           <section key={platform} className="col">
-            <h3>{PLATFORM_LABELS[platform]}</h3>
+            <h3><PlatformLogo platform={platform} height={36} /></h3>
             {loading && <p className="muted">Searching…</p>}
             {!loading && r && 'error' in r && <p className="error">{r.error}</p>}
             {!loading &&
@@ -24,7 +26,7 @@ export function ResultsGrid({ data, loading, onAdd }: Props) {
               Array.isArray(r) &&
               r.map((p) => (
                 <article key={p.id} className="card">
-                  {p.imageUrl && <img src={p.imageUrl} alt="" loading="lazy" />}
+                  <ProductImage src={p.imageUrl} alt={p.title} platform={platform} size={140} />
                   <div className="info">
                     <a href={p.url} target="_blank" rel="noreferrer" className="title">
                       {p.title}
@@ -37,7 +39,7 @@ export function ResultsGrid({ data, loading, onAdd }: Props) {
                     </div>
                   </div>
                   <button disabled={!p.inStock} onClick={() => onAdd(p)}>
-                    {p.inStock ? 'Add' : 'Out of stock'}
+                    {p.inStock ? 'Add to cart' : 'Out of stock'}
                   </button>
                 </article>
               ))}

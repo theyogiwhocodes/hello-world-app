@@ -1,6 +1,6 @@
 # Cart Compare
 
-Search one product across **Amazon, Flipkart, Blinkit, Zepto and Swiggy Instamart**, see the top 5 matches per site, compare the **total (items + delivery + handling) and delivery time**, manage several carts, then hit **Buy** to have a browser extension fill that site's cart in your own logged-in browser.
+Search one product across **Amazon, Flipkart, Blinkit, Zepto and Swiggy Instamart**, see the best match per site (top 1, with product image), compare the **total (items + delivery + handling) and delivery time**, manage several carts, then hit **Buy** to have a browser extension fill that site's cart in your own logged-in browser.
 
 ```
 server/     Express + TypeScript API, Playwright scrapers
@@ -28,6 +28,8 @@ The UI detects it and hides the "install" banner. Log in to each shop in the sam
 - Scraping may breach each site's Terms of Service. Use for personal purposes only.
 - **Fees are estimates.** Delivery/handling fees and free-delivery thresholds are static config in `server/src/fees.ts` and vary by city, time and membership. ETAs come from the scraped page when the site shows one (quick commerce), otherwise from config (shown with `~`).
 - **Buy** drives your own browser tabs: it opens each product page and clicks the site's own add button, then opens the cart. It never checks out or touches credentials. The add-button detection and the cart URLs for Blinkit/Zepto/Instamart (which use cart drawers) are best-effort and unverified; it reports which items it could not add.
+- **Logos** in `web/public/logos/*.svg` are simple brand-coloured wordmark badges, not official artwork. Drop official logo files over them (same filenames) if you have the right to use them.
+- **Product images** are hot-linked from each site's CDN; if a site blocks that, the card falls back to the platform logo. Mock mode uses generated placeholder images.
 - Carts are stored in your browser's `localStorage`. Each cart is bound to one platform.
 
 ## Hosting online
