@@ -25,7 +25,9 @@ export async function searchAll(query: string, pincode: string): Promise<SearchR
       try {
         const raw = await withTimeout(providers[platform].search(query, pincode), PROVIDER_TIMEOUT_MS);
         const top = topResults(query, raw, TOP_N);
-        const result: SearchResult = top.length ? top : { error: 'No matching products found (or the site blocked the request)' };
+        const result: SearchResult = top.length
+          ? top
+          : { error: `Found ${raw.length} products but none matched "${query}"` };
         if (top.length) cache.set(key, result);
         return [platform, result];
       } catch (e) {

@@ -1,6 +1,7 @@
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { closeBrowser, collectCards, getContext } from '../src/browser';
 import type { Page } from 'playwright';
+import { parseCards } from '../src/providers/parse';
 
 // Exercises the real page.evaluate path (the mock provider never does). Skipped when Chromium
 // isn't installed: run `npx playwright install chromium` or set CHROMIUM_PATH.
@@ -42,5 +43,32 @@ describe('collectCards (runs inside the browser)', () => {
     expect(cards[0].href).toBe('https://shop.test/prn/butter/prid/123');
     expect(cards[0].text).toContain('₹58');
     expect(cards[0].img).toBe('https://cdn.test/b.jpg');
+  });
+});
+
+describe('collectCards on real-site-like structures', () => {
+  const html = `<meta charset="utf-8">
+    <div id="results">
+      <div class="tile"><a href="/Amul-Butter/dp/B0AAAAAAA1/ref=x"><img src="https://cdn.test/a1.jpg"></a>
+        <h2><a href="/Amul-Butter/dp/B0AAAAAAA1/ref=y">Amul Butter 500 g</a></h2>
+        <span class="a-price">₹285</span><span>M.R.P: ₹310</span></div>
+      <div class="tile"><a href="/Mother-Dairy/dp/B0BBBBBBB2/ref=x"><img src="https://cdn.test/b2.jpg"></a>
+        <h2><a href="/Mother-Dairy/dp/B0BBBBBBB2/ref=y">Mother Dairy Butter 100 g</a></h2>
+        <span class="a-price">₹58</span></div>
+    </div>`;
+
+  it('finds the price next to the link without merging neighbouring products', async (ctx) => {
+    if (!page) return ctx.skip();
+    await page.unroute('https://shop.test/**');
+    await page.route('https://shop.test/**', (r) => r.fulfill({ contentType: 'text/html; charset=utf-8', body: html }));
+    await page.goto('https://shop.test/s?k=butter');
+    const cards = await collectCards(page, '/(dp|gp/product)/[A-Z0-9]{10}', '/dp/([A-Z0-9]{10})');
+    const products = parseCards('amazon', 'https://shop.test', cards);
+    expect(products.map((p) => [p.productId, p.title, p.price])).toEqual([
+      ['B0AAAAAAA1', 'Amul Butter 500 g', 285],
+      ['B0BBBBBBB2', 'Mother Dairy Butter 100 g', 58],
+    ]);
+    expect(products[0].mrp).toBe(310);
+    expect(products[0].imageUrl).toBe('https://cdn.test/a1.jpg');
   });
 });

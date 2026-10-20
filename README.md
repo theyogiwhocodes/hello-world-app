@@ -52,3 +52,13 @@ docker run -p 8080:8080 -e MOCK=1 cart-compare   # http://localhost:8080
 | **Your own computer + Cloudflare Tunnel** (`cloudflared tunnel --url http://localhost:8080`) | **Best chance** | Free, residential IP, more RAM. The sites tend to block datacenter IPs. |
 
 **Using the extension with a hosted URL:** run `node scripts/set-extension-origin.mjs https://your-app.example.com`, then reload the extension at `chrome://extensions`. Each user installs the extension themselves.
+
+## Debugging scrapers
+
+```bash
+DEBUG_SCRAPE=1 HEADLESS=0 npm run dev
+```
+- Each search logs one line per site: page title, final URL, tiles found, tiles with a price.
+- `HEADLESS=0` opens a visible Chromium window so you can watch (and solve a captcha / set the location by hand).
+- `DEBUG_SCRAPE=1` saves a screenshot + HTML of any failing page to `server/debug/` (git-ignored).
+- Error cards now say why: bot check, no product links (location prompt or layout), or links without a ₹ price.
