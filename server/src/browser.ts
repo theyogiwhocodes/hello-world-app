@@ -30,6 +30,9 @@ export async function getContext(key: string, init?: (ctx: BrowserContext) => Pr
         permissions: ['geolocation'],
         viewport: { width: 1366, height: 900 },
       });
+      // tsx/esbuild wraps functions with a `__name` helper; when Playwright serializes a function
+      // into the page (page.evaluate) that helper doesn't exist there, so define a no-op shim.
+      await c.addInitScript('window.__name = window.__name || ((fn) => fn);');
       await init?.(c);
       return c;
     });
